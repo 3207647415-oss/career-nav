@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>职路导航</title>
+  <style>
+    :root {
+      --primary: #165DFF;
+      --primary-hover: #0e4bd9;
+      --primary-soft: #e8f2ff;
+      --text: #1d2939;
+      --muted: #475467;
+      --subtle: #98a2b3;
+      --bg: #f7f8fa;
+      --card: #ffffff;
+      --border: #d0d5dd;
+      --radius: 14px;
+      --nav-h: 56px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* —— 首页：导航 —— */
+    .landing { min-height: 100vh; display: flex; flex-direction: column; }
+    .zhilu-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 4vw, 2rem);
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+    }
+    .zhilu-nav.is-scrolled {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    }
+    .zhilu-nav__logo {
+      font-weight: 700;
+      font-size: clamp(1.05rem, 2.8vw, 1.2rem);
+      color: var(--primary);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+    .zhilu-nav__logo:hover { opacity: 0.9; }
+    .zhilu-nav__about {
+      font-size: clamp(0.85rem, 2.4vw, 0.95rem);
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .zhilu-nav__about:hover { color: var(--primary); }
+
+    .landing-main { flex: 1; padding-top: var(--nav-h); }
+    .zhilu-section {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: clamp(2rem, 5vw, 3.25rem) clamp(1.25rem, 4vw, 2rem);
+    }
+    .zhilu-hero {
+      text-align: center;
+      padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    }
+    .zhilu-hero__title {
+      margin: 0 auto 1rem;
+      max-width: 20em;
+      font-size: clamp(1.5rem, 5.5vw, 2.5rem);
+      font-weight: 700;
+      color: #000000;
+      line-height: 1.3;
+    }
+    .zhilu-hero__sub {
+      margin: 0 auto 1.75rem;
+      max-width: 38em;
+      font-size: clamp(1rem, 2.9vw, 1.15rem);
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .zhilu-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: min(100%, 520px);
+      min-height: 56px;
+      padding: 0.9rem clamp(1.5rem, 6vw, 2.5rem);
+      font-size: clamp(1.05rem, 3vw, 1.25rem);
+      font-weight: 600;
+      color: #fff;
+      background: var(--primary);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 10px 32px rgba(22, 93, 255, 0.32);
+      transition: background 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease;
+      font-family: inherit;
+    }
+    .zhilu-btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 12px 36px rgba(22, 93, 255, 0.38);
+    }
+    .zhilu-btn-primary:active { transform: scale(0.99); }
+    .zhilu-hero__note {
+      margin: 1rem 0 0;
+      font-size: clamp(0.85rem, 2.4vw, 0.95rem);
+      color: var(--subtle);
+    }
+
+    .zhilu-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1rem, 3vw, 1.5rem);
+    }
+    @media (max-width: 768px) {
+      .zhilu-cards { grid-template-columns: 1fr; }
+    }
+    .zhilu-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: clamp(1.25rem, 3vw, 1.75rem);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .zhilu-card:hover {
+      border-color: rgba(22, 93, 255, 0.22);
+      box-shadow: 0 8px 28px rgba(22, 93, 255, 0.08);
+    }
+    .zhilu-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(22, 93, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+    .zhilu-card__icon svg { width: 24px; height: 24px; }
+    .zhilu-card__title {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.05rem, 2.8vw, 1.15rem);
+      font-weight: 600;
+      color: var(--text);
+    }
+    .zhilu-card__desc {
+      margin: 0;
+      font-size: clamp(0.95rem, 2.5vw, 1.02rem);
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .zhilu-testimonials {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(1rem, 3vw, 1.5rem);
+    }
+    @media (max-width: 768px) {
+      .zhilu-testimonials { grid-template-columns: 1fr; }
+    }
+    .zhilu-quote {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: clamp(1.25rem, 3vw, 1.75rem);
+    }
+    .zhilu-quote__text {
+      margin: 0 0 1rem;
+      font-size: clamp(0.98rem, 2.6vw, 1.05rem);
+      color: var(--text);
+      line-height: 1.65;
+    }
+    .zhilu-quote__by {
+      font-size: clamp(0.88rem, 2.4vw, 0.95rem);
+      color: var(--subtle);
+    }
+
+    .zhilu-footer {
+      text-align: center;
+      padding: clamp(2rem, 5vw, 3rem) clamp(1.25rem, 4vw, 2rem) 2rem;
+      border-top: 1px solid var(--border);
+      background: #fff;
+    }
+    .zhilu-footer__tag {
+      margin: 0 0 1rem;
+      font-size: clamp(0.92rem, 2.5vw, 1rem);
+      color: var(--muted);
+    }
+    .zhilu-btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0.6rem 1.5rem;
+      font-size: clamp(0.95rem, 2.5vw, 1rem);
+      font-weight: 600;
+      color: var(--primary);
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      text-decoration: none;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .zhilu-btn-outline:hover {
+      background: rgba(22, 93, 255, 0.06);
+      border-color: var(--primary-hover);
+      color: var(--primary-hover);
+    }
+    .zhilu-footer__copy {
+      margin: 1.5rem 0 0;
+      font-size: clamp(0.8rem, 2.2vw, 0.88rem);
+      color: var(--subtle);
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* —— 测评 / 结果 / 信息页（原逻辑未改） —— */
+    .flow-page {
+      max-width: 560px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: clamp(1rem, 4vw, 1.5rem);
+    }
+    .panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid rgba(22, 93, 255, 0.12);
+      box-shadow: 0 8px 32px rgba(22, 93, 255, 0.08);
+      padding: clamp(1.25rem, 4vw, 1.75rem);
+      min-height: min(100%, calc(100vh - 2rem));
+      display: flex;
+      flex-direction: column;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0.65rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.12s;
+      font-family: inherit;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      width: 100%;
+      color: #fff;
+      background: var(--primary);
+      box-shadow: 0 6px 20px rgba(22, 93, 255, 0.35);
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-secondary {
+      background: var(--primary-soft);
+      color: var(--primary);
+      margin-top: 0.75rem;
+    }
+    .btn-secondary:hover { background: #dbeafe; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      font-weight: 500;
+    }
+    .progress {
+      font-size: 0.875rem;
+      color: var(--subtle);
+      margin-bottom: 0.75rem;
+    }
+    .q-title {
+      font-size: clamp(1.05rem, 3.5vw, 1.2rem);
+      font-weight: 600;
+      margin: 0 0 1.1rem;
+      color: var(--text);
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+    .opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      padding: 0.85rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      background: #fafbff;
+    }
+    .opt:hover { border-color: rgba(22, 93, 255, 0.45); background: #fff; }
+    .opt input {
+      margin-top: 0.2rem;
+      accent-color: var(--primary);
+      flex-shrink: 0;
+    }
+    .opt span.label {
+      font-weight: 700;
+      color: var(--primary);
+      flex-shrink: 0;
+      min-width: 1.25rem;
+    }
+    .opt span.txt { color: var(--text); font-size: 0.95rem; }
+    .opt:has(input:checked) {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+    .results h2 {
+      margin: 0 0 1rem;
+      font-size: 1.15rem;
+      text-align: center;
+    }
+    .rank-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.25rem;
+    }
+    .rank-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+      background: var(--primary-soft);
+      font-weight: 600;
+      color: var(--text);
+    }
+    .rank-list li:first-child {
+      background: linear-gradient(90deg, #dbeafe, #e8f2ff);
+      border: 1px solid rgba(22, 93, 255, 0.25);
+    }
+    .summary {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin: 0 0 1.25rem;
+      padding: 1rem;
+      background: #f9fafb;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .btn-info {
+      text-align: left;
+      justify-content: space-between;
+      background: #fff;
+      border: 2px solid var(--border);
+      color: var(--text);
+      box-shadow: none;
+    }
+    .btn-info:hover { border-color: var(--primary); color: var(--primary); }
+    .info-page h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+    .info-page ul {
+      margin: 0;
+      padding-left: 1.15rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .info-page li { margin-bottom: 0.5rem; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <!-- 首页（新设计） -->
+  <div id="view-home" class="landing">
+    <header class="zhilu-nav" id="zhilu-nav" role="banner">
+      <a class="zhilu-nav__logo" href="index.html">职路导航</a>
+      <a class="zhilu-nav__about" href="about.html">关于我们</a>
+    </header>
+
+    <main class="landing-main">
+      <section class="zhilu-section zhilu-hero">
+        <h1 class="zhilu-hero__title reveal">还在纠结考研/考公/就业？3分钟帮你找对路</h1>
+        <p class="zhilu-hero__sub reveal">不用盲目跟风，结合你的性格、家庭、能力，给你最适合的专属规划，一站式搞定所有备考信息</p>
+        <div class="reveal">
+          <button type="button" class="zhilu-btn-primary" id="btn-start">开始免费测评</button>
+          <p class="zhilu-hero__note">已有1200+大学生完成测评，帮他们摆脱迷茫</p>
+        </div>
+      </section>
+
+      <section class="zhilu-section" aria-labelledby="zhilu-adv-title">
+        <h2 id="zhilu-adv-title" class="visually-hidden">产品优势</h2>
+        <div class="zhilu-cards">
+          <article class="zhilu-card reveal">
+            <div class="zhilu-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-5.33-6-10a6 6 0 1 1 12 0c0 4.67-6 10-6 10z"/><circle cx="12" cy="11" r="2.5"/></svg>
+            </div>
+            <h3 class="zhilu-card__title">专属个性化推荐</h3>
+            <p class="zhilu-card__desc">不是通用的性格测评，结合你的家庭条件、能力，推荐你真的能走的路，不是空中楼阁</p>
+          </article>
+          <article class="zhilu-card reveal">
+            <div class="zhilu-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2-3h6l2 3h5a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="3"/></svg>
+            </div>
+            <h3 class="zhilu-card__title">一站式信息整合</h3>
+            <p class="zhilu-card__desc">不用跑5个平台找信息，考公/考研/就业的报名时间、岗位数据、备考资料，全在这</p>
+          </article>
+          <article class="zhilu-card reveal">
+            <div class="zhilu-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <h3 class="zhilu-card__title">全程免费无广告</h3>
+            <p class="zhilu-card__desc">我们只想帮你少走弯路，所有功能都免费，没有隐藏收费，没有乱七八糟的广告</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="zhilu-section" aria-labelledby="zhilu-testimonials-title">
+        <h2 id="zhilu-testimonials-title" class="visually-hidden">用户评价</h2>
+        <div class="zhilu-testimonials">
+          <figure class="zhilu-quote reveal">
+            <blockquote class="zhilu-quote__text">之前纠结了半年，不知道该考研还是考公，测完之后一下子就想通了，现在已经开始准备考公了！</blockquote>
+            <figcaption class="zhilu-quote__by">大三 · 汉语言文学</figcaption>
+          </figure>
+          <figure class="zhilu-quote reveal">
+            <blockquote class="zhilu-quote__text">原来以为自己适合考研，结果测完发现就业更适合我，现在已经拿到了心仪的offer！</blockquote>
+            <figcaption class="zhilu-quote__by">大四 · 计算机</figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
+
+    <footer class="zhilu-footer">
+      <p class="zhilu-footer__tag">职路导航 · 帮你找到最适合你的职业方向</p>
+      <a class="zhilu-btn-outline" href="community.html">加入同路人社群</a>
+      <p class="zhilu-footer__copy">© 2026 职路导航 版权所有</p>
+    </footer>
+  </div>
+
+  <!-- 测评 -->
+  <div class="flow-page" id="view-quiz-wrap" hidden>
+    <section class="panel" id="view-quiz">
+      <p class="progress" id="quiz-progress"></p>
+      <h2 class="q-title" id="quiz-question"></h2>
+      <div class="options" id="quiz-options"></div>
+      <button type="button" class="btn btn-primary" id="btn-next" disabled>下一题</button>
+    </section>
+  </div>
+
+  <!-- 结果 -->
+  <div class="flow-page" id="view-result-wrap" hidden>
+    <section class="panel results" id="view-result">
+      <h2>你的方向适配度</h2>
+      <ol class="rank-list" id="result-rank"></ol>
+      <p class="summary" id="result-summary"></p>
+      <div class="btn-row" id="result-buttons"></div>
+      <button type="button" class="btn btn-ghost" id="btn-restart">返回首页</button>
+    </section>
+  </div>
+
+  <!-- 信息页：考公 -->
+  <div class="flow-page" id="view-info-gong-wrap" hidden>
+    <section class="panel info-page" id="view-info-gong">
+      <h2>考公入门指南</h2>
+      <ul>
+        <li><strong>报名时间</strong>：国考一般在每年 10 月报名、11–12 月笔试；省考多集中在 2–3 月报名，具体以各省公告为准。</li>
+        <li><strong>考试科目</strong>：公共科目通常为《行政职业能力测验》（行测）+《申论》；部分岗位加试专业科目。</li>
+        <li><strong>热门岗位</strong>：税务局、海关、海事、铁路公安、统计局调查队、选调生等（因年而异，以职位表为准）。</li>
+        <li><strong>备考重点</strong>：先打牢行测的言语理解、判断推理与资料分析，再系统练申论阅读归纳与公文/大作文；关注历年真题与岗位匹配度。</li>
+      </ul>
+      <button type="button" class="btn btn-secondary" data-back="result">返回结果</button>
+    </section>
+  </div>
+
+  <!-- 信息页：考研 -->
+  <div class="flow-page" id="view-info-kao-wrap" hidden>
+    <section class="panel info-page" id="view-info-kao">
+      <h2>考研入门指南</h2>
+      <ul>
+        <li><strong>报名时间</strong>：网上预报名约 9 月下旬，正式报名 10 月；初试多在 12 月倒数第二个周末。</li>
+        <li><strong>考试科目</strong>：政治、外语为多数专业必考；业务课一、二因专业而异（如数学、专业课）。管理类联考等另有组合。</li>
+        <li><strong>热门方向</strong>：计算机、金融、法律（非法学）、教育学、新传等报考集中，竞争大，需结合院校与就业规划选择。</li>
+        <li><strong>备考重点</strong>：尽早确定目标院校与参考书目；英语单词长线积累；专业课吃透真题与考纲；关注复试与调剂信息。</li>
+      </ul>
+      <button type="button" class="btn btn-secondary" data-back="result">返回结果</button>
+    </section>
+  </div>
+
+  <!-- 信息页：就业 -->
+  <div class="flow-page" id="view-info-job-wrap" hidden>
+    <section class="panel info-page" id="view-info-job">
+      <h2>就业入门指南</h2>
+      <ul>
+        <li><strong>求职节奏</strong>：大三暑期实习、大四上秋招（7–12 月）、春招（次年 3–5 月）为主窗口，宜早做简历与作品集。</li>
+        <li><strong>核心准备</strong>：简历一页突出成果与数据；刷笔试（行测类、专业类）；准备结构化/行为面试 STAR 表述。</li>
+        <li><strong>热门去向</strong>：互联网产品技术、国企管培、银行金融科技、教培与新媒体运营等，需结合城市与行业景气度。</li>
+        <li><strong>行动重点</strong>：补齐 1–2 项可展示技能（如数据分析、设计、编程基础）；多投多面，同步积累实习与内推渠道。</li>
+      </ul>
+      <button type="button" class="btn btn-secondary" data-back="result">返回结果</button>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      var MAX_PER_TRACK = 40;
+
+      var QUESTIONS = [
+        {
+          q: "周末休息的时候，你更喜欢？",
+          opts: [
+            { k: "A", t: "和朋友出去玩/聚会聊天", s: { job: 2 } },
+            { k: "B", t: "自己在家看书/追剧/做手工", s: { kao: 2 } },
+            { k: "C", t: "出去运动/探索新的地方", s: { kao: 1, job: 1 } },
+            { k: "D", t: "赶工/做兼职/学新技能", s: { job: 2 } }
+          ]
+        },
+        {
+          q: "面对未来的生活，你更看重？",
+          opts: [
+            { k: "A", t: "稳定，朝九晚五，不用担心中年失业", s: { gong: 2 } },
+            { k: "B", t: "成长，能一直学新东西，有上升空间", s: { job: 2 } },
+            { k: "C", t: "自由，能自己安排时间，不用打卡上班", s: { kao: 1, job: 1 } },
+            { k: "D", t: "搞钱，能多赚钱，累点也没关系", s: { job: 2 } }
+          ]
+        },
+        {
+          q: "遇到新的挑战，你更倾向于？",
+          opts: [
+            { k: "A", t: "求稳，按成熟的方法来，尽量不犯错", s: { gong: 2 } },
+            { k: "B", t: "尝试，试试新的方法，哪怕可能失败", s: { kao: 2 } },
+            { k: "C", t: "找人帮忙，问问有经验的人怎么做", s: { job: 2 } },
+            { k: "D", t: "先放一放，等准备好了再做", s: { gong: 1, kao: 1 } }
+          ]
+        },
+        {
+          q: "你更喜欢和什么打交道？",
+          opts: [
+            { k: "A", t: "人，和人沟通、帮人解决问题", s: { gong: 1, job: 1 } },
+            { k: "B", t: "数据/文字，整理信息、写东西", s: { kao: 2 } },
+            { k: "C", t: "工具/技术，做东西、研究技术", s: { job: 2 } },
+            { k: "D", t: "创意/想法，想新点子、做策划", s: { job: 2 } }
+          ]
+        },
+        {
+          q: "如果让你选一份工作，你能接受经常加班吗？",
+          opts: [
+            { k: "A", t: "完全不能，我必须要准点下班", s: { gong: 2 } },
+            { k: "B", t: "偶尔可以，但是不能天天加", s: { gong: 1, kao: 1 } },
+            { k: "C", t: "可以接受，只要能学到东西/涨工资", s: { job: 2 } },
+            { k: "D", t: "没问题，年轻就是要拼", s: { job: 2 } }
+          ]
+        },
+        {
+          q: "你喜欢做有明确规则的事，还是没规则的事？",
+          opts: [
+            { k: "A", t: "明确规则，按流程来，不用动脑子想", s: { gong: 2 } },
+            { k: "B", t: "半明确，大部分有规则，偶尔可以创新", s: { gong: 1, job: 1 } },
+            { k: "C", t: "没规则，自己发挥，越自由越好", s: { kao: 1, job: 1 } }
+          ]
+        },
+        {
+          q: "你更羡慕哪种人？",
+          opts: [
+            { k: "A", t: "体制内的公务员，工作稳定，福利好", s: { gong: 2 } },
+            { k: "B", t: "大厂的程序员，工资高，有前途", s: { job: 2 } },
+            { k: "C", t: "研究生/博士，学历高，能做研究", s: { kao: 2 } },
+            { k: "D", t: "自己创业的老板，自己说了算", s: { job: 2 } }
+          ]
+        },
+        {
+          q: "你做决定的时候，更相信？",
+          opts: [
+            { k: "A", t: "别人的经验，跟着大家走不会错", s: { gong: 2 } },
+            { k: "B", t: "自己的感觉，想做就做", s: { job: 2 } },
+            { k: "C", t: "数据和分析，算清楚了再做", s: { kao: 2 } },
+            { k: "D", t: "父母的建议，他们不会害我", s: { gong: 1, kao: 1 } }
+          ]
+        },
+        {
+          q: "你现在的专业属于？",
+          opts: [
+            { k: "A", t: "文科/社科（中文、法学、新闻等）", s: { gong: 2 } },
+            { k: "B", t: "理科/工科（计算机、机械、化学等）", s: { job: 2 } },
+            { k: "C", t: "商科/经管（会计、金融、管理等）", s: { kao: 1, job: 1 } },
+            { k: "D", t: "医学/艺术/其他", s: { kao: 2 } }
+          ]
+        },
+        {
+          q: "你觉得自己的学习能力怎么样？",
+          opts: [
+            { k: "A", t: "很强，背东西、考试对我来说很简单", s: { kao: 2 } },
+            { k: "B", t: "还可以，正常备考能跟上", s: { kao: 1, job: 1 } },
+            { k: "C", t: "一般，需要花很多时间才能学会", s: { gong: 1, job: 1 } },
+            { k: "D", t: "不太好，我不太擅长考试", s: { job: 2 } }
+          ]
+        },
+        {
+          q: "你的英语水平？",
+          opts: [
+            { k: "A", t: "六级以上/雅思托福，能看英文资料", s: { kao: 1, job: 1 } },
+            { k: "B", t: "四级，能应付基本的需求", s: { gong: 1, kao: 1 } },
+            { k: "C", t: "刚好过线，不太好", s: { gong: 2 } },
+            { k: "D", t: "没考过，一般", s: { gong: 2 } }
+          ]
+        },
+        {
+          q: "你有没有什么拿得出手的技能？（比如编程、写作、设计等）",
+          opts: [
+            { k: "A", t: "有，而且很熟练，能直接用", s: { job: 2 } },
+            { k: "B", t: "会一点，但是不精通", s: { kao: 1, job: 1 } },
+            { k: "C", t: "没什么特别的，都是基础的", s: { gong: 1, kao: 1 } },
+            { k: "D", t: "没有，还没学过", s: { kao: 2 } }
+          ]
+        },
+        {
+          q: "你的家庭能否支持你脱产1-2年备考（没有收入）？",
+          opts: [
+            { k: "A", t: "完全可以，家里不用我赚钱", s: { kao: 2 } },
+            { k: "B", t: "勉强可以，省一点够花", s: { gong: 1, kao: 1 } },
+            { k: "C", t: "不太可以，我需要自己赚钱", s: { job: 2 } },
+            { k: "D", t: "完全不行，我还要帮家里", s: { job: 2 } }
+          ]
+        },
+        {
+          q: "如果要考研/留学，家里能否承担学费和生活费？",
+          opts: [
+            { k: "A", t: "完全可以，几十万没问题", s: { kao: 2 } },
+            { k: "B", t: "勉强可以，十几万可以接受", s: { kao: 1, gong: 1 } },
+            { k: "C", t: "不太可以，只能承担一点", s: { gong: 1, job: 1 } },
+            { k: "D", t: "完全不行，只能靠我自己", s: { job: 2 } }
+          ]
+        },
+        {
+          q: "父母有没有相关行业的人脉，能帮你内推或者找机会？",
+          opts: [
+            { k: "A", t: "有，很多资源，能帮上大忙", s: { job: 2 } },
+            { k: "B", t: "有一点，能帮点小忙", s: { gong: 1, job: 1 } },
+            { k: "C", t: "没有，但是能帮我问问", s: { kao: 1, job: 1 } },
+            { k: "D", t: "完全没有，都要靠我自己", s: { gong: 1, kao: 1 } }
+          ]
+        },
+        {
+          q: "家里有没有体制内的资源，能帮你了解考公/考编的信息？",
+          opts: [
+            { k: "A", t: "有，很了解，能帮我", s: { gong: 2 } },
+            { k: "B", t: "有一点，知道一点", s: { gong: 2 } },
+            { k: "C", t: "没有，但是愿意帮我问", s: { gong: 1, kao: 1 } },
+            { k: "D", t: "完全没有", s: { kao: 1, job: 1 } }
+          ]
+        },
+        {
+          q: "你能不能接受刚毕业的前2年，工资只有3-4k？",
+          opts: [
+            { k: "A", t: "完全可以，稳定就行", s: { gong: 2 } },
+            { k: "B", t: "可以，只要后面能涨", s: { kao: 1, job: 1 } },
+            { k: "C", t: "不太可以，我需要赚更多", s: { job: 2 } },
+            { k: "D", t: "完全不行，太低了", s: { kao: 2 } }
+          ]
+        },
+        {
+          q: "如果备考1年失败了，你能不能接受再来一次？",
+          opts: [
+            { k: "A", t: "可以，我有时间耗得起", s: { kao: 1, gong: 1 } },
+            { k: "B", t: "勉强可以，但是压力会很大", s: { job: 2 } },
+            { k: "C", t: "不太可以，我不能接受失败", s: { gong: 2 } },
+            { k: "D", t: "完全不行，失败了就没退路了", s: { job: 2 } }
+          ]
+        },
+        {
+          q: "你能不能接受去小城市/基层工作？",
+          opts: [
+            { k: "A", t: "完全可以，只要稳定就行", s: { gong: 2 } },
+            { k: "B", t: "可以，先去锻炼一下", s: { gong: 1, job: 1 } },
+            { k: "C", t: "不太可以，我想去大城市", s: { job: 2 } },
+            { k: "D", t: "完全不行，我一定要留大城市", s: { kao: 1, job: 1 } }
+          ]
+        },
+        {
+          q: "如果一条路走不通，你能不能接受马上换另一条路？",
+          opts: [
+            { k: "A", t: "可以，我不怕转行/换方向", s: { job: 2 } },
+            { k: "B", t: "可以，但是需要一点时间调整", s: { kao: 1, job: 1 } },
+            { k: "C", t: "不太可以，我想一条路走到黑", s: { kao: 2 } },
+            { k: "D", t: "完全不行，选了就不能改", s: { gong: 2 } }
+          ]
+        }
+      ];
+
+      var LABELS = { gong: "考公", kao: "考研", job: "就业" };
+
+      var views = {
+        home: document.getElementById("view-home"),
+        quiz: document.getElementById("view-quiz-wrap"),
+        result: document.getElementById("view-result-wrap"),
+        infoGong: document.getElementById("view-info-gong-wrap"),
+        infoKao: document.getElementById("view-info-kao-wrap"),
+        infoJob: document.getElementById("view-info-job-wrap")
+      };
+
+      var currentIndex = 0;
+      var answers = [];
+
+      function show(view) {
+        Object.keys(views).forEach(function (k) {
+          views[k].hidden = k !== view;
+        });
+        window.scrollTo(0, 0);
+      }
+
+      function pct(raw) {
+        return Math.min(100, Math.round((raw / MAX_PER_TRACK) * 100));
+      }
+
+      function addScores(total, delta) {
+        if (!delta) return;
+        if (delta.gong) total.gong += delta.gong;
+        if (delta.kao) total.kao += delta.kao;
+        if (delta.job) total.job += delta.job;
+      }
+
+      function computeScores() {
+        var total = { gong: 0, kao: 0, job: 0 };
+        for (var i = 0; i < answers.length; i++) {
+          var qi = answers[i];
+          if (qi == null) continue;
+          addScores(total, QUESTIONS[i].opts[qi].s);
+        }
+        return total;
+      }
+
+      function renderQuiz() {
+        var q = QUESTIONS[currentIndex];
+        document.getElementById("quiz-progress").textContent =
+          "第 " + (currentIndex + 1) + " / " + QUESTIONS.length + " 题";
+        document.getElementById("quiz-question").textContent = q.q;
+        var wrap = document.getElementById("quiz-options");
+        wrap.innerHTML = "";
+        var sel = answers[currentIndex];
+        for (var i = 0; i < q.opts.length; i++) {
+          var o = q.opts[i];
+          var id = "opt-" + i;
+          var lab = document.createElement("label");
+          lab.className = "opt";
+          lab.setAttribute("for", id);
+          var inp = document.createElement("input");
+          inp.type = "radio";
+          inp.name = "quiz-opt";
+          inp.value = String(i);
+          inp.id = id;
+          if (sel === i) inp.checked = true;
+          inp.addEventListener("change", function () {
+            document.getElementById("btn-next").disabled = false;
+          });
+          var spanL = document.createElement("span");
+          spanL.className = "label";
+          spanL.textContent = o.k + ".";
+          var spanT = document.createElement("span");
+          spanT.className = "txt";
+          spanT.textContent = o.t;
+          lab.appendChild(inp);
+          lab.appendChild(spanL);
+          lab.appendChild(spanT);
+          wrap.appendChild(lab);
+        }
+        var btn = document.getElementById("btn-next");
+        btn.disabled = sel == null;
+        btn.textContent = currentIndex === QUESTIONS.length - 1 ? "提交" : "下一题";
+      }
+
+      function readSelectedOption() {
+        var r = document.querySelector('input[name="quiz-opt"]:checked');
+        return r ? parseInt(r.value, 10) : null;
+      }
+
+      function buildSummary(order) {
+        var topKey = order[0].key;
+        var gap = order[0].raw - order[1].raw;
+        var body = {
+          gong:
+            "你在稳定、规则与体制相关信息等维度上得分更集中，性格与条件可能更贴近公职类路径。建议结合目标地区、岗位表与专业限制细化选岗，并预留行测申论的系统学习周期。",
+          kao:
+            "你在学习投入、学历提升与长期规划相关题目上得分更集中，继续深造或系统备考可能更顺势。建议尽早确定院校与专业方向，把英语与专业课拆成阶段目标执行。",
+          job:
+            "你在实践技能、收入节奏与市场路径相关题目上得分更集中，直接就业或实习积累可能是当前更顺手的抓手。建议用项目与实习把履历做实，并盯住秋招春招与内推窗口。"
+        };
+        var tail =
+          gap <= 4
+            ? " 你与第二名的分差不大，可再结合家庭支持、专业门槛做一次人工取舍。"
+            : "";
+        return "根据你的情况，综合测算后更适合的主方向是「" + LABELS[topKey] + "」。" + body[topKey] + tail;
+      }
+
+      function showResult() {
+        var scores = computeScores();
+        var list = [
+          { key: "gong", raw: scores.gong },
+          { key: "kao", raw: scores.kao },
+          { key: "job", raw: scores.job }
+        ];
+        list.sort(function (a, b) {
+          if (b.raw !== a.raw) return b.raw - a.raw;
+          return a.key.localeCompare(b.key);
+        });
+
+        var ol = document.getElementById("result-rank");
+        ol.innerHTML = "";
+        for (var i = 0; i < list.length; i++) {
+          var it = list[i];
+          var p = pct(it.raw);
+          var li = document.createElement("li");
+          li.innerHTML =
+            '<span>' +
+            (i + 1) +
+            ". " +
+            LABELS[it.key] +
+            "</span><span>" +
+            p +
+            "分（适配度 " +
+            p +
+            "%）</span>";
+          ol.appendChild(li);
+        }
+
+        document.getElementById("result-summary").textContent = buildSummary(list);
+
+        var btns = document.getElementById("result-buttons");
+        btns.innerHTML = "";
+        ["gong", "kao", "job"].forEach(function (key) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "btn btn-info";
+          b.textContent = "查看「" + LABELS[key] + "」入门指南 →";
+          b.addEventListener("click", function () {
+            if (key === "gong") show("infoGong");
+            else if (key === "kao") show("infoKao");
+            else show("infoJob");
+          });
+          btns.appendChild(b);
+        });
+
+        show("result");
+      }
+
+      document.getElementById("btn-start").addEventListener("click", function () {
+        currentIndex = 0;
+        answers = new Array(QUESTIONS.length);
+        show("quiz");
+        renderQuiz();
+      });
+
+      document.getElementById("btn-next").addEventListener("click", function () {
+        var sel = readSelectedOption();
+        if (sel == null) return;
+        answers[currentIndex] = sel;
+        if (currentIndex < QUESTIONS.length - 1) {
+          currentIndex++;
+          renderQuiz();
+        } else {
+          showResult();
+        }
+      });
+
+      document.getElementById("btn-restart").addEventListener("click", function () {
+        currentIndex = 0;
+        answers = [];
+        show("home");
+      });
+
+      document.querySelectorAll("[data-back]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          show("result");
+        });
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      var nav = document.getElementById("zhilu-nav");
+      function onScroll() {
+        if (!nav) return;
+        if (window.scrollY > 8) nav.classList.add("is-scrolled");
+        else nav.classList.remove("is-scrolled");
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      var root = document.getElementById("view-home");
+      if (!root) return;
+      var reveals = root.querySelectorAll(".reveal");
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (e) {
+              if (e.isIntersecting) e.target.classList.add("is-visible");
+            });
+          },
+          { root: null, rootMargin: "0px 0px -6% 0px", threshold: 0.08 }
+        );
+        reveals.forEach(function (el) {
+          io.observe(el);
+        });
+      } else {
+        reveals.forEach(function (el) {
+          el.classList.add("is-visible");
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
