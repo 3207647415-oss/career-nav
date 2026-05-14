@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>加入同路人社群 - 职路导航</title>
+  <style>
+    :root { --primary: #165DFF; --text: #1d2129; --muted: #4e5969; --bg: #f7f8fa; --card: #fff; --border: #e5e6eb; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding: clamp(1.25rem, 4vw, 2rem);
+    }
+    .wrap { max-width: 480px; margin: 0 auto; text-align: center; }
+    a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    h1 { font-size: clamp(1.25rem, 4vw, 1.5rem); margin: 1rem 0; }
+    p { color: var(--muted); text-align: left; margin: 0 0 1.25rem; }
+    .qr-box {
+      margin: 1.5rem auto 0;
+      max-width: 280px;
+      aspect-ratio: 1;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p style="text-align:left"><a href="index.html">← 返回首页</a></p>
+    <h1>加入同路人社群</h1>
+    <p>将下方占位区域替换为你的微信群二维码图片（例如使用 <code>&lt;img src="你的图片地址"&gt;</code>）。也可把本页的链接改成直接跳转到微信活码或加群链接。</p>
+    <div class="qr-box" role="img" aria-label="微信群二维码占位">微信群二维码<br />（请替换）</div>
+  </div>
+</body>
+</html>
